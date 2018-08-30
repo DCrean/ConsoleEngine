@@ -28,8 +28,7 @@ namespace ConsoleEngine.Engine
         /// <param name="fillChar"></param>
         public Display(int width, int height, char fillChar)
         {
-            _width = width;
-            _height = Height;
+            DisplayArea = new Area(new Point(0, 0), width, height);
             Fill(fillChar);
         }
 
@@ -80,7 +79,7 @@ namespace ConsoleEngine.Engine
             }
         }
 
-        private void RenderFrame()
+        public void RenderFrame()
         {
             RenderSprites();
         }
@@ -88,7 +87,7 @@ namespace ConsoleEngine.Engine
         private void RenderSprites()
         {
             foreach(Sprite sprite in Sprites)
-                sprite.RenderOn(this, (int)sprite.X, (int)sprite.Y);
+                sprite.RenderOn(this);
         }
 
         /// <summary>

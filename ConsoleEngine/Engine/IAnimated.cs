@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using static ConsoleEngine.Engine.Drawable;
 
 namespace ConsoleEngine.Engine
 {
     interface IAnimated
     {
-        double X { get; set; }
-        double Y { get; set; }
         double DeltaX { get; set; }
         double DeltaY { get; set; }
 

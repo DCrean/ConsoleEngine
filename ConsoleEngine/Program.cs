@@ -7,21 +7,13 @@ namespace ConsoleEngine
     {
         static void Main(string[] args)
         {
-            Display display = new Display(40, 20 '#');
-            display.Show();
+            Display display = new Display(40, 20, '.');
 
-            Sprite box = new Sprite();
-            box.Resize(3, 3);
-            box.Fill('*');
-
-
-            Sprite box2 = new Sprite();
-            box2.Resize(10, 3);
-            box2.Fill('6');
+            Sprite box = new Sprite(2,2,5,5,'#');
 
             display.Sprites.Add(box);
-            display.Sprites.Add(box2);
-            
+
+            display.Show();
 
             Console.ReadLine();
         }
