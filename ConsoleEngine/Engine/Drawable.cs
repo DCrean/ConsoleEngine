@@ -6,11 +6,14 @@ namespace ConsoleEngine.Engine
 {
     abstract class Drawable
     {
-        private char[] BufferData = new char[0];
-        public char[] Data { get; private set; } = new char[0];
-        public int Width { get; private set; } = 0;
-        public int Height { get; private set; } = 0;
+        private char[] _bufferData = new char[0];
+        protected int _width = 0;
+        protected int _height = 0;
+        private char[] _data = new char[0];
 
+        public char[] Data { get => _data; private set => _data = value; }
+        public int Width { get => _width; private set => _width = value; }
+        public int Height { get => _height; private set => _height = value; }
         /// <summary>
         /// Resizes the Display to the new <paramref name="width"/> and <paramref name="height"/>
         /// </summary>
@@ -34,7 +37,7 @@ namespace ConsoleEngine.Engine
         /// <param name="fillChar"></param>
         public void Fill(char fillChar)
         {
-            Fill(0, 0, Width, Height, fillChar);
+            Fill(0, 0, _width, _height, fillChar);
         }
 
         /// <summary>
@@ -48,16 +51,16 @@ namespace ConsoleEngine.Engine
         /// <param name="fillChar"></param>
         public void Fill(int x, int y, int x2, int y2, char fillChar)
         {
-            x = x < Width ? x : Width;
-            x2 = x2 < Width ? x2 : Width;
-            y = y < Height ? y : Height;
-            y2 = y2 < Height ? y2 : Height;
+            x = x < _width ? x : _width;
+            x2 = x2 < _width ? x2 : _width;
+            y = y < _height ? y : _height;
+            y2 = y2 < _height ? y2 : _height;
 
             for (int currentY = y; currentY < y2; currentY++)
             {
                 for (int currentX = x; currentX < x2; currentX++)
                 {
-                    Data[currentY * Width + currentX] = fillChar;
+                    Data[currentY * _width + currentX] = fillChar;
                 }
             }
 
@@ -72,16 +75,16 @@ namespace ConsoleEngine.Engine
         /// <param name="y"></param>
         public void RenderOn(Drawable target, int x, int y)
         {
-            if(target.IsInFrame(x, y, Width, Height))
+            if (target.IsInFrame(x, y, _width, _height))
             {
-                for (int currY = 0; currY < Height; currY++)
+                for (int currY = 0; currY < _height; currY++)
                 {
-                    for (int currX = 0; currX < Width; currX++)
+                    for (int currX = 0; currX < _width; currX++)
                     {
                         int targetX = x + currX;
                         int targetY = y + currY;
-                        if(targetX < target.Width && targetY < target.Height && targetX >= 0 && targetY >= 0)
-                            target.BufferData[targetY * target.Width + targetX ] = Data[currY * Width + currX];
+                        if (targetX < target.Width && targetY < target.Height && targetX >= 0 && targetY >= 0)
+                            target._bufferData[targetY * target.Width + targetX] = _data[currY * _width + currX];
                     }
                 }
             }
@@ -104,11 +107,11 @@ namespace ConsoleEngine.Engine
             Console.SetCursorPosition(0, 0);
             Console.CursorVisible = false;
 
-            for (int y = 0; y < Height; y++)
+            for (int y = 0; y < _height; y++)
             {
-                for (int x = 0; x < Width; x++)
+                for (int x = 0; x < _width; x++)
                 {
-                    Console.Write(BufferData[y * Width + x]);
+                    Console.Write(_bufferData[y * _width + x]);
                 }
                 Console.WriteLine();
             }
@@ -118,8 +121,8 @@ namespace ConsoleEngine.Engine
 
         private void ClearBuffer()
         {
-            BufferData = new char[Data.Length];
-            Data.CopyTo(BufferData, 0);
+            _bufferData = new char[_data.Length];
+            _data.CopyTo(_bufferData, 0);
         }
     }
 }

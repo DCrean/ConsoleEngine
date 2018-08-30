@@ -7,6 +7,7 @@ namespace ConsoleEngine.Engine
 {
     class Display : Drawable
     {
+        public bool ShowFPS = true;
         public string Name = "Engine";
         public List<Sprite> Sprites = new List<Sprite>();
 
@@ -14,12 +15,33 @@ namespace ConsoleEngine.Engine
         private int TicksPerSecond = 10;
         private int FrameCounter = 0;
 
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
+        public Display() { }
+
+        /// <summary>
+        /// Returns a new Display with <paramref name="width"/> and <paramref name="height"/>, filled with <paramref name="fillChar"/>
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="fillChar"></param>
+        public Display(int width, int height, char fillChar)
+        {
+            _width = width;
+            _height = Height;
+            Fill(fillChar);
+        }
+
+        /// <summary>
+        /// Begin Displaying
+        /// </summary>
         public void Show()
         {
             Console.Title = Name;
             IsDrawing = true;
             StartDraw();
-            StartFPSCounter();
+            if(ShowFPS) StartFPSCounter();
             StartAnimationController();
         }
 
@@ -69,6 +91,9 @@ namespace ConsoleEngine.Engine
                 sprite.RenderOn(this, (int)sprite.X, (int)sprite.Y);
         }
 
+        /// <summary>
+        /// Stop Displaying
+        /// </summary>
         public void Hide()
         {
             IsDrawing = false;
