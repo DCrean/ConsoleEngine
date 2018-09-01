@@ -14,7 +14,7 @@ namespace ConsoleEngine.Engine
         public int Width { get => DisplayArea.Width; protected set => DisplayArea.Width = value; }
         public int Height { get => DisplayArea.Height; protected set => DisplayArea.Height = value; }
 
-        protected Area DisplayArea
+        public Area DisplayArea
         {
             get => _displayArea;
             set
@@ -107,25 +107,31 @@ namespace ConsoleEngine.Engine
 
         private bool IsInFrame(double x, double y)
         {
-            if (x > Width || x < 0) return false;
-            if (y > Height || y < 0) return false;
+            if (x >= Width || x < 0) return false;
+            if (y >= Height || y < 0) return false;
             return true;
         }
 
         private void SafeSet(char glyph, double x, double y)
         {
+            int resolvedX = (int) x;
+            int resolvedY = (int) y;
+
             if (IsInFrame(x, y))
             {
-                int index = (int) (y * Width + x);
+                int index = (int) (resolvedY * Width + resolvedX);
                 _data[index] = glyph;
             }
         }
 
         private void SafeRender(char glyph, double x, double y)
         {
+            int resolvedX = (int)x;
+            int resolvedY = (int)y;
+
             if (IsInFrame(x, y))
             {
-                int index = (int)(y * Width + x);
+                int index = (int) (resolvedY * Width + resolvedX);
                 _bufferData[index] = glyph;
             }
         }

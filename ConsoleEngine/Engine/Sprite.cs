@@ -6,11 +6,7 @@ namespace ConsoleEngine.Engine
 {
     class Sprite : Drawable, IAnimated
     {
-        private double _deltaX = 0;
-        private double _deltaY = 0;
-
-        double IAnimated.DeltaX { get => _deltaX; set => _deltaX = value; }
-        double IAnimated.DeltaY { get => _deltaY; set => _deltaY = value; }
+        public Force Vector { get; set; }
 
         public Sprite() { }
 
@@ -34,7 +30,7 @@ namespace ConsoleEngine.Engine
 
         public void Animate()
         {
-            DisplayArea.Origin.Translate(_deltaX, _deltaY);
+            DisplayArea.Origin.Translate(Vector.DeltaX, Vector.DeltaY);
         }
     }
 }

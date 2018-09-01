@@ -75,7 +75,9 @@ namespace ConsoleEngine.Engine
             {
                 await Task.Delay(1000 / TicksPerSecond);
                 foreach (Sprite sprite in Sprites)
+                {
                     sprite.Animate();
+                }
             }
         }
 

@@ -7,8 +7,7 @@ namespace ConsoleEngine.Engine
 {
     interface IAnimated
     {
-        double DeltaX { get; set; }
-        double DeltaY { get; set; }
+        Force Vector { get; set; }
 
         /// <summary>
         /// Handles how the object will animate each tick
