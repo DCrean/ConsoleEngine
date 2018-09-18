@@ -32,5 +32,10 @@ namespace ConsoleEngine.Engine
             _x += deltaX;
             _y += deltaY;
         }
+
+        public override string ToString()
+        {
+            return "(" + X + ", " + Y + ")";
+        }
     }
 }

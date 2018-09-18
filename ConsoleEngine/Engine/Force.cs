@@ -57,6 +57,8 @@ namespace ConsoleEngine.Engine
         public double DeltaX { get => _deltaX; }
         public double DeltaY { get => _deltaY; }
 
+        public Force() { }
+
         public Force(double force, double angle)
         {
             _angle = angle;

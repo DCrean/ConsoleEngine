@@ -1,4 +1,5 @@
 ﻿using ConsoleEngine.Engine;
+using ConsoleEngine.Engine.Drawables;
 using System;
 using System.Threading.Tasks;
 
@@ -8,13 +9,17 @@ namespace ConsoleEngine
     {
         static Display display = new Display(40, 20, '.');
         static Sprite box = new Sprite(2, 2, 5, 5, '#');
+        static Glyph glyph = new Glyph('#');
 
         static void Main(string[] args)
         {
-            box.Vector = new Force(1, 180);
+            glyph.ForegroundColor = ConsoleColor.DarkGreen;
+            box.Fill(glyph);
+
             display.Sprites.Add(box);
 
             display.Show();
+
             Console.ReadLine();
         }
 

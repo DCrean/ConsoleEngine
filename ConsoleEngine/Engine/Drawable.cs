@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConsoleEngine.Engine.Drawables;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,14 +7,15 @@ namespace ConsoleEngine.Engine
 {
     abstract class Drawable
     {
-        private char[] _data = new char[0];
-        private char[] _bufferData = new char[0]; //All renders applied to buffer so as to keep _data clean
+        private Glyph[] _data = new Glyph[0];
+        private Glyph[] _bufferData = new Glyph[0]; //All renders applied to buffer so as to keep _data clean
         private Area _displayArea = new Area();
+        private Point _origin = new Point(0, 0);
 
-        public char[] Data { get => _data; private set => _data = value; }
+        public Glyph[] Data { get => _data; private set => _data = value; }
         public int Width { get => DisplayArea.Width; protected set => DisplayArea.Width = value; }
         public int Height { get => DisplayArea.Height; protected set => DisplayArea.Height = value; }
-
+        public Point Origin { get => _origin; set => _origin = value; }
         public Area DisplayArea
         {
             get => _displayArea;
@@ -31,51 +33,72 @@ namespace ConsoleEngine.Engine
         /// <param name="height"></param>
         public void Resize(int width, int height)
         {
-            char[] resizedData = new char[width * height];
+            Glyph[] resizedData = new Glyph[width * height];
             Width = width;
             Height = height;
-            
+
             _data = resizedData;
 
             ClearBuffer();
         }
 
         /// <summary>
-        /// Fills entire Display with <paramref name="fillChar"/>
+        /// Fills entire Display with a default Glyph of <paramref name="fillChar"/>
         /// </summary>
         /// <param name="fillChar"></param>
         public void Fill(char fillChar)
         {
-            Area drawableArea = new Area(0, 0, Width, Height);
-            Fill(drawableArea, fillChar);
+            Fill(new Point(0, 0), _displayArea, new Glyph(fillChar));
+        }
+
+        /// <summary>
+        /// Fills entire Display with <paramref name="fillGlyph"/>
+        /// </summary>
+        /// <param name="fillGlyph"></param>
+        public void Fill(Glyph fillGlyph)
+        {
+            Fill(new Point(0,0), _displayArea, fillGlyph);
         }
 
         /// <summary>
         /// Fills area between the <paramref name="first"/> 
-        /// Point and the <paramref name="second"/> Point with <paramref name="fillChar"/>
+        /// Point and the <paramref name="second"/> Point with <paramref name="fillGlyph"/>
         /// </summary>
         /// <param name="first"></param>
         /// <param name="second"></param>
-        /// <param name="fillChar"></param>
-        public void Fill(Point first, Point second, char fillChar)
+        /// <param name="fillGlyph"></param>
+        public void Fill(Point first, Point second, Glyph fillGlyph)
         {
-            Fill( new Area(first, second), fillChar);
+            Fill(CalculateOrigin(first, second), new Area(first, second), fillGlyph);
         }
 
         /// <summary>
-        /// Fills defined <paramref name="area"/> with <paramref name="fillChar"/>
+        /// Fills an area defined by <paramref name="width"/> and <paramref name="height"/>,
+        /// beginning at the <paramref name="origin"/>, with <paramref name="fillGlyph"/>
+        /// </summary>
+        /// <param name="origin"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="fillGlyph"></param>
+        public void Fill(Point origin, int width, int height, Glyph fillGlyph)
+        {
+            Fill(origin, new Area(width, height), fillGlyph);
+        }
+
+        /// <summary>
+        /// Fills defined <paramref name="area"/>, beginning at <paramref name="origin"/> with <paramref name="fillGlyph"/>
         /// </summary>
         /// <param name="area"></param>
-        /// <param name="fillChar"></param>
-        public void Fill(Area area, char fillChar)
+        /// <param name="fillGlyph"></param>
+        public void Fill(Point origin, Area area, Glyph fillGlyph)
         {
-            if (!IsInFrame(area)) return;
+            if (!IsInFrame(origin, area)) return;
 
-            for (int y = (int) area.Origin.Y; y < area.Height; y++)
+            for (int y = (int)origin.Y; y < area.Height; y++)
             {
-                for (int x = (int) area.Origin.X; x < area.Width; x++)
+                for (int x = (int)origin.X; x < area.Width; x++)
                 {
-                    SafeSet(fillChar, x, y);
+                    SafeSet(fillGlyph, x, y);
                 }
             }
 
@@ -83,25 +106,37 @@ namespace ConsoleEngine.Engine
         }
 
         /// <summary>
-        /// Renders this over <paramref name="target"/> at specified <paramref name="position"/>
+        /// Renders this over <paramref name="target"/>
         /// </summary>
         /// <param name="target"></param>
-        /// <param name="position"></param>
         public void RenderOn(Drawable target)
         {
-            if (!target.IsInFrame(DisplayArea)) return;
+            if (!target.IsInFrame(_origin, _displayArea)) return;
 
             for (int x = 0; x < Height; x++)
                 for (int y = 0; y < Width; y++)
-                    target.SafeRender(GetCharAt(x, y), DisplayArea.Origin.X + x, DisplayArea.Origin.Y + y);
+                    target.SafeRender(GetGlyphAt(x, y), _origin.X + x, _origin.Y + y);
         }
 
-        private bool IsInFrame(Area area)
+        public void SetDrawableArea(Point first, Point second)
         {
-            if (area.Origin.X > Width) return false;
-            if (area.Origin.Y > Height) return false;
-            if (area.Origin.X + area.Width < 0) return false;
-            if (area.Origin.Y + area.Height < 0) return false;
+            _origin = CalculateOrigin(first, second);
+            _displayArea = new Area(first, second);
+        }
+
+        private Point CalculateOrigin(Point first, Point second)
+        {
+            int x = (int) first.XCompareTo(second).X;
+            int y = (int) first.YCompareTo(second).Y;
+            return new Point(x, y);
+        }
+
+        private bool IsInFrame(Point origin, Area area)
+        {
+            if (origin.X > Width) return false;
+            if (origin.Y > Height) return false;
+            if (origin.X + area.Width < 0) return false;
+            if (origin.Y + area.Height < 0) return false;
             return true;
         }
 
@@ -112,7 +147,7 @@ namespace ConsoleEngine.Engine
             return true;
         }
 
-        private void SafeSet(char glyph, double x, double y)
+        private void SafeSet(Glyph glyph, double x, double y)
         {
             int resolvedX = (int) x;
             int resolvedY = (int) y;
@@ -124,7 +159,7 @@ namespace ConsoleEngine.Engine
             }
         }
 
-        private void SafeRender(char glyph, double x, double y)
+        private void SafeRender(Glyph glyph, double x, double y)
         {
             int resolvedX = (int)x;
             int resolvedY = (int)y;
@@ -136,7 +171,7 @@ namespace ConsoleEngine.Engine
             }
         }
 
-        private char GetCharAt(int x, int y)
+        private Glyph GetGlyphAt(int x, int y)
         {
             return _data[x * Width + y];
         }
@@ -148,12 +183,16 @@ namespace ConsoleEngine.Engine
         {
             Console.SetCursorPosition(0, 0);
             Console.CursorVisible = false;
+            Glyph glyph;
 
             for (int y = 0; y < Height; y++)
             {
                 for (int x = 0; x < Width; x++)
                 {
-                    Console.Write(_bufferData[y * Width + x]);
+                    glyph = _bufferData[y * Width + x];
+                    Console.BackgroundColor = glyph.BackgroundColor;
+                    Console.ForegroundColor = glyph.ForegroundColor;
+                    Console.Write(glyph);
                 }
                 Console.WriteLine();
             }
@@ -163,7 +202,7 @@ namespace ConsoleEngine.Engine
 
         private void ClearBuffer()
         {
-            _bufferData = new char[_data.Length];
+            _bufferData = new Glyph[_data.Length];
             _data.CopyTo(_bufferData, 0);
         }
     }

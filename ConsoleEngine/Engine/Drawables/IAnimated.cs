@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using static ConsoleEngine.Engine.Drawable;
 
-namespace ConsoleEngine.Engine
+namespace ConsoleEngine.Engine.Drawables
 {
     interface IAnimated
     {

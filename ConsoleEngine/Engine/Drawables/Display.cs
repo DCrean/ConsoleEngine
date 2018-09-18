@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleEngine.Engine
+namespace ConsoleEngine.Engine.Drawables
 {
     class Display : Drawable
     {
@@ -28,7 +28,7 @@ namespace ConsoleEngine.Engine
         /// <param name="fillChar"></param>
         public Display(int width, int height, char fillChar)
         {
-            DisplayArea = new Area(new Point(0, 0), width, height);
+            DisplayArea = new Area(width, height);
             Fill(fillChar);
         }
 
@@ -39,16 +39,15 @@ namespace ConsoleEngine.Engine
         {
             Console.Title = Name;
             IsDrawing = true;
-            StartDraw();
             if(ShowFPS) StartFPSCounter();
             StartAnimationController();
+            Parallel.Invoke(() => StartDraw());
         }
 
-        private async void StartDraw()
+        private void StartDraw()
         {
             while (IsDrawing)
             {
-                await Task.Delay(1);
                 RenderFrame();
                 Draw();
                 FrameCounter++;

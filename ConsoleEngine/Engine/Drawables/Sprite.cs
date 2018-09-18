@@ -2,35 +2,38 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ConsoleEngine.Engine
+namespace ConsoleEngine.Engine.Drawables
 {
     class Sprite : Drawable, IAnimated
     {
-        public Force Vector { get; set; }
+        public Force Vector { get; set; } = new Force();
 
         public Sprite() { }
 
         public Sprite(int x, int y, int width, int height, char fillChar)
         {
-            DisplayArea = new Area(x, y, width, height);
+            Origin = new Point(x, y);
+            DisplayArea = new Area(width, height);
             Fill(fillChar);
         }
 
         public Sprite(Point origin, int width, int height, char fillChar)
         {
-            DisplayArea = new Area(origin, width, height);
+            Origin = origin;
+            DisplayArea = new Area(width, height);
             Fill(fillChar);
         }
 
-        public Sprite(Area area, char fillChar)
+        public Sprite(Point origin, Area area, char fillChar)
         {
+            Origin = origin;
             DisplayArea = area;
             Fill(fillChar);
         }
 
         public void Animate()
         {
-            DisplayArea.Origin.Translate(Vector.DeltaX, Vector.DeltaY);
+            Origin.Translate(Vector.DeltaX, Vector.DeltaY);
         }
     }
 }
