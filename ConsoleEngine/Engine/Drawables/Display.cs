@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ConsoleEngine.Engine.Drawables
@@ -10,10 +11,13 @@ namespace ConsoleEngine.Engine.Drawables
         public bool ShowFPS = true;
         public string Name = "Engine";
         public List<Sprite> Sprites = new List<Sprite>();
+        public Glyph background = new Glyph('.');
 
         private bool IsDrawing = false;
         private int TicksPerSecond = 10;
         private int FrameCounter = 0;
+        private Thread drawThread;
+        private Thread animationThread;
 
         /// <summary>
         /// Default Constructor
@@ -26,10 +30,13 @@ namespace ConsoleEngine.Engine.Drawables
         /// <param name="width"></param>
         /// <param name="height"></param>
         /// <param name="fillChar"></param>
-        public Display(int width, int height, char fillChar)
+        public Display(int width, int height, Glyph background)
         {
             DisplayArea = new Area(width, height);
-            Fill(fillChar);
+            this.background = background;
+            Fill(background);
+            drawThread = new Thread(new ThreadStart(StartDraw));
+            animationThread = new Thread(new ThreadStart(StartAnimationController));
         }
 
         /// <summary>
@@ -40,8 +47,8 @@ namespace ConsoleEngine.Engine.Drawables
             Console.Title = Name;
             IsDrawing = true;
             if(ShowFPS) StartFPSCounter();
-            StartAnimationController();
-            Parallel.Invoke(() => StartDraw());
+            animationThread.Start();
+            drawThread.Start();
         }
 
         private void StartDraw()
@@ -51,6 +58,7 @@ namespace ConsoleEngine.Engine.Drawables
                 RenderFrame();
                 Draw();
                 FrameCounter++;
+                Thread.Sleep(0);
             }
         }
 
@@ -68,14 +76,15 @@ namespace ConsoleEngine.Engine.Drawables
             }
         }
 
-        private async void StartAnimationController()
+        private void StartAnimationController()
         {
             while (IsDrawing)
             {
-                await Task.Delay(1000 / TicksPerSecond);
+                Thread.Sleep(1000 / TicksPerSecond);
                 foreach (Sprite sprite in Sprites)
                 {
                     sprite.Animate();
+                    Thread.Sleep(0);
                 }
             }
         }
@@ -97,6 +106,8 @@ namespace ConsoleEngine.Engine.Drawables
         public void Hide()
         {
             IsDrawing = false;
+            drawThread.Join();
+            animationThread.Join();
         }
     }
 }

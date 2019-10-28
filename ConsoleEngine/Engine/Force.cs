@@ -66,6 +66,12 @@ namespace ConsoleEngine.Engine
             ResolveDeltas();
         }
 
+        public void add(Force forceToAdd)
+        {
+            this._deltaX += forceToAdd.DeltaX;
+            this._deltaY += forceToAdd.DeltaY;
+        }
+
         private void ResolveDeltas()
         {
             QuadrantVector subVector = new QuadrantVector(this);
