@@ -33,7 +33,7 @@ namespace ConsoleEngine.Engine.Drawables
 
         public void Animate()
         {
-            Origin.Translate(Vector.DeltaX, Vector.DeltaY);
+            Origin.Translate(Vector.DeltaX, Vector.DeltaY / heightToWidthRatio);
         }
     }
 }

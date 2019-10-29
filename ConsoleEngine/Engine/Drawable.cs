@@ -12,6 +12,7 @@ namespace ConsoleEngine.Engine
         private Area _displayArea = new Area();
         private Point _origin = new Point(0, 0);
 
+        public double heightToWidthRatio = 2;
         public Glyph[] Data { get => _data; private set => _data = value; }
         public int Width { get => DisplayArea.Width; protected set => DisplayArea.Width = value; }
         public int Height { get => DisplayArea.Height; protected set => DisplayArea.Height = value; }
@@ -154,7 +155,7 @@ namespace ConsoleEngine.Engine
 
             if (IsInFrame(x, y))
             {
-                int index = (int) (resolvedY * Width + resolvedX);
+                int index = (resolvedY * Width + resolvedX);
                 _data[index] = glyph;
             }
         }
@@ -166,7 +167,7 @@ namespace ConsoleEngine.Engine
 
             if (IsInFrame(x, y))
             {
-                int index = (int) (resolvedY * Width + resolvedX);
+                int index = (resolvedY * Width + resolvedX);
                 _bufferData[index] = glyph;
             }
         }

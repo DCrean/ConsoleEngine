@@ -8,7 +8,7 @@ namespace ConsoleEngine
 {
     class Program
     {
-        static readonly Display display = new Display(40, 20, new Glyph('.'));
+        static readonly Display display = new Display(20, 20, new Glyph('.'));
         static readonly Sprite box = new Sprite(2, 2, 1, 1, '#');
         static readonly Glyph glyph = new Glyph('#');
 

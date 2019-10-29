@@ -32,6 +32,7 @@ namespace ConsoleEngine.Engine.Drawables
         /// <param name="fillChar"></param>
         public Display(int width, int height, Glyph background)
         {
+            height = (int) (height / heightToWidthRatio);
             DisplayArea = new Area(width, height);
             this.background = background;
             Fill(background);
