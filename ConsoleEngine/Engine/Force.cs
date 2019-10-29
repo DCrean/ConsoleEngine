@@ -49,13 +49,11 @@ namespace ConsoleEngine.Engine
             }
         }
 
-        private double _angle = 0;
-        private double _force = 0;
-        private double _deltaX = 0;
-        private double _deltaY = 0;
+        private readonly double _angle = 0;
+        private readonly double _force = 0;
 
-        public double DeltaX { get => _deltaX; }
-        public double DeltaY { get => _deltaY; }
+        public double DeltaX { get; private set; } = 0;
+        public double DeltaY { get; private set; } = 0;
 
         public Force() { }
 
@@ -68,15 +66,21 @@ namespace ConsoleEngine.Engine
 
         public void add(Force forceToAdd)
         {
-            this._deltaX += forceToAdd.DeltaX;
-            this._deltaY += forceToAdd.DeltaY;
+            DeltaX += forceToAdd.DeltaX;
+            DeltaY += forceToAdd.DeltaY;
+        }
+
+        public void multiply(double amount)
+        {
+            DeltaX *= amount;
+            DeltaY *= amount;
         }
 
         private void ResolveDeltas()
         {
             QuadrantVector subVector = new QuadrantVector(this);
-            _deltaX = ResolveDeltaX(subVector);
-            _deltaY = ResolveDeltaY(subVector);
+            DeltaX = ResolveDeltaX(subVector);
+            DeltaY = ResolveDeltaY(subVector);
         }
 
         private double ResolveDeltaX(QuadrantVector qVector)

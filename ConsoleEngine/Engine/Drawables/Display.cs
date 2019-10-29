@@ -14,10 +14,10 @@ namespace ConsoleEngine.Engine.Drawables
         public Glyph background = new Glyph('.');
 
         private bool IsDrawing = false;
-        private int TicksPerSecond = 10;
+        private readonly int TicksPerSecond = 10;
         private int FrameCounter = 0;
-        private Thread drawThread;
-        private Thread animationThread;
+        private readonly Thread drawThread;
+        private readonly Thread animationThread;
 
         /// <summary>
         /// Default Constructor
