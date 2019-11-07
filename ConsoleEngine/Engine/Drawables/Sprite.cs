@@ -31,6 +31,13 @@ namespace ConsoleEngine.Engine.Drawables
             Fill(fillChar);
         }
 
+        public Sprite(Point origin, Area area, Glyph fillGlyph)
+        {
+            Origin = origin;
+            DisplayArea = area;
+            Fill(fillGlyph);
+        }
+
         public void Animate()
         {
             Origin.Translate(Vector.DeltaX, Vector.DeltaY / heightToWidthRatio);
