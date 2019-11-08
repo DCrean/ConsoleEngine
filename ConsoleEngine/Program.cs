@@ -13,13 +13,23 @@ namespace ConsoleEngine
         {
             TicTacToeGame ttt = new TicTacToeGame();
             ttt.Play();
+            Print("Thanks for playing!");
         }
 
       
 
-        private static void Print(string message)
+        public static void Print(string message)
         {
             Console.WriteLine(message);
+        }
+
+
+        public static void PrintArray(int[] array)
+        {
+            foreach(int item in array)
+            {
+                Console.WriteLine(item);
+            }
         }
     }
 }

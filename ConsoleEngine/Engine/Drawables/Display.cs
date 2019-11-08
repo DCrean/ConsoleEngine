@@ -11,13 +11,13 @@ namespace ConsoleEngine.Engine.Drawables
         public bool ShowFPS = true;
         public string Name = "Engine";
         public List<Sprite> Sprites = new List<Sprite>();
-        public Glyph background = new Glyph('.');
+        public Glyph Background = new Glyph('.');
 
         private bool IsDrawing = false;
         private readonly int TicksPerSecond = 10;
         private int FrameCounter = 0;
-        private readonly Thread drawThread;
-        private readonly Thread animationThread;
+        private readonly Thread DrawThread;
+        private readonly Thread AnimationThread;
 
         /// <summary>
         /// Default Constructor
@@ -32,12 +32,12 @@ namespace ConsoleEngine.Engine.Drawables
         /// <param name="fillChar"></param>
         public Display(int width, int height, Glyph background)
         {
-            height = (int) (height / heightToWidthRatio);
+            height = (int) (height / HeightToWidthRatio);
             DisplayArea = new Area(width, height);
-            this.background = background;
+            this.Background = background;
             Fill(background);
-            drawThread = new Thread(new ThreadStart(StartDraw));
-            animationThread = new Thread(new ThreadStart(StartAnimationController));
+            DrawThread = new Thread(new ThreadStart(StartDraw));
+            AnimationThread = new Thread(new ThreadStart(StartAnimationController));
         }
 
         /// <summary>
@@ -48,8 +48,8 @@ namespace ConsoleEngine.Engine.Drawables
             Console.Title = Name;
             IsDrawing = true;
             if(ShowFPS) StartFPSCounter();
-            animationThread.Start();
-            drawThread.Start();
+            AnimationThread.Start();
+            DrawThread.Start();
         }
 
         private void StartDraw()
@@ -107,8 +107,9 @@ namespace ConsoleEngine.Engine.Drawables
         public void Hide()
         {
             IsDrawing = false;
-            drawThread.Join();
-            animationThread.Join();
+            if(DrawThread.IsAlive) DrawThread.Join();
+            if(AnimationThread.IsAlive) AnimationThread.Join();
+            Fill(' ');
         }
     }
 }
