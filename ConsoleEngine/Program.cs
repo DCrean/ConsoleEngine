@@ -12,7 +12,7 @@ namespace ConsoleEngine
         static void Main(string[] args)
         {
             TicTacToeGame ttt = new TicTacToeGame();
-            ttt.Play();
+            ttt.Play(19);
             Print("Thanks for playing!");
         }
 

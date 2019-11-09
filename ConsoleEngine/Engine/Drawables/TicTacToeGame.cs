@@ -10,7 +10,13 @@ namespace ConsoleEngine.Engine.Drawables
         TicTacToePlayer Player1 = new TicTacToePlayer('X');
         TicTacToePlayer Player2 = new TicTacToePlayer('O');
         TicTacToePlayer CurrentPlayer;
+        int BoardSize = 10;
 
+        public void Play(int boardSize)
+        {
+            BoardSize = boardSize;
+            Play();
+        }
 
         public void Play()
         {
@@ -32,7 +38,7 @@ namespace ConsoleEngine.Engine.Drawables
         private void NewGame()
         {
             Board.Hide();
-            Board = new TicTacToeBoard();
+            Board = new TicTacToeBoard(BoardSize);
             CurrentPlayer = Player1;
             Board.Show();
         }
@@ -113,12 +119,14 @@ namespace ConsoleEngine.Engine.Drawables
 
 
             private void Init(){
+
                 CalulateRowIndexes();
                 CalulateColumnIndexes();
                 CreateBoardLines();
                 CreateBoardCells();
                 PlaceLinesOnBoard();
                 PlaceCellsOnBoard();
+
             }
 
 
@@ -128,20 +136,20 @@ namespace ConsoleEngine.Engine.Drawables
 
 
             private void CalulateRowIndexes(){
-                int boardWidth = BoardDisplay.Width;
-                int edgeOffset = boardWidth / 6;
+                int boardHeight = BoardDisplay.Height;
+                int edgeOffset = boardHeight / 6;
                 RowIndexes[0] = edgeOffset;
-                RowIndexes[1] = boardWidth / 2;
-                RowIndexes[2] = boardWidth - edgeOffset - 1;
+                RowIndexes[1] = boardHeight / 2;
+                RowIndexes[2] = boardHeight - edgeOffset - 1;
             }
 
 
             private void CalulateColumnIndexes(){
-                int boardHeight = BoardDisplay.Height;
-                int edgeOffset = boardHeight / 6;
+                int boardWidth = BoardDisplay.Width;
+                int edgeOffset = boardWidth / 6;
                 ColumnIndexes[0] = edgeOffset;
-                ColumnIndexes[1] = boardHeight / 2;
-                ColumnIndexes[2] = boardHeight - edgeOffset - 1;
+                ColumnIndexes[1] = boardWidth / 2;
+                ColumnIndexes[2] = boardWidth - edgeOffset - 1;
             }
 
 
@@ -179,7 +187,8 @@ namespace ConsoleEngine.Engine.Drawables
                     for(int col = 0; col < 3; col++){
                         int colIndex = ColumnIndexes[col];
                         int rowIndex = RowIndexes[row];
-                        BoardCells[cellIndex].Location = new Point(colIndex, rowIndex);
+                        BoardCells[cellIndex].CellSprite.Origin.X = colIndex;
+                        BoardCells[cellIndex].CellSprite.Origin.Y = rowIndex;
                         cellIndex++;
                     }
                 }
@@ -220,11 +229,10 @@ namespace ConsoleEngine.Engine.Drawables
 
         class TicTacToeCell
         {
-            private Point _cellLocation;
             private Glyph EmptyCellChar = new Glyph(' ');
             private TicTacToePlayer _owner = null;
 
-            public Sprite CellSprite;
+            public Sprite CellSprite = new Sprite();
             public TicTacToePlayer Owner
             {
                 get => _owner;
@@ -236,7 +244,7 @@ namespace ConsoleEngine.Engine.Drawables
             }
             public Point Location
             {
-                get => _cellLocation;
+                get => CellSprite.Origin;
                 set
                 {
                     CellSprite.Origin = value;
@@ -244,21 +252,21 @@ namespace ConsoleEngine.Engine.Drawables
             }
 
             public TicTacToeCell(){
-                _cellLocation = new Point(0,0);
+                CellSprite.Origin = new Point(0,0);
                 Init();
             }
 
 
             public TicTacToeCell(Point location)
             {
-                _cellLocation = location;
+                CellSprite.Origin = location;
                 Init();
             }
 
 
             public TicTacToeCell(Point location, int width, int height)
             {
-                _cellLocation = location;
+                CellSprite.Origin = location;
                 Area cellArea = new Area(width, height);
                 Init();
                 CellSprite.DisplayArea = cellArea;
@@ -267,15 +275,15 @@ namespace ConsoleEngine.Engine.Drawables
 
             public TicTacToeCell(int row, int col)
             {
-                _cellLocation = new Point(col, row);
+                CellSprite.Origin = new Point(col, row);
                 Init();
             }
 
 
             private void Init()
             {
-                int adjustedRow = (int)_cellLocation.Y * 2;
-                int adjustedCol = (int)_cellLocation.X * 2;
+                int adjustedRow = (int)CellSprite.Origin.Y * 2;
+                int adjustedCol = (int)CellSprite.Origin.X * 2;
                 Point displayLocation = new Point(adjustedCol, adjustedRow);
                 Area displayArea = new Area(1, 1);
                 CellSprite = new Sprite(displayLocation, displayArea, EmptyCellChar);

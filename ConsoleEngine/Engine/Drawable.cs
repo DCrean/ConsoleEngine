@@ -12,7 +12,7 @@ namespace ConsoleEngine.Engine
         private Area _displayArea = new Area();
         private Point _origin = new Point(0, 0);
 
-        public double HeightToWidthRatio = 1;
+        public double HeightToWidthRatio = 2;
         public Glyph[] Data { get => _data; private set => _data = value; }
         public int Width { get => DisplayArea.Width; protected set => DisplayArea.Width = value; }
         public int Height { get => DisplayArea.Height; protected set => DisplayArea.Height = value; }

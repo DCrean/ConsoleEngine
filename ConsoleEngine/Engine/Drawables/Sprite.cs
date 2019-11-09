@@ -8,7 +8,10 @@ namespace ConsoleEngine.Engine.Drawables
     {
         public Force Vector { get; set; } = new Force();
 
-        public Sprite() { }
+        public Sprite() 
+        {
+            Origin = new Point(0,0);
+        }
 
         public Sprite(int x, int y, int width, int height, char fillChar)
         {
@@ -40,7 +43,7 @@ namespace ConsoleEngine.Engine.Drawables
 
         public void Animate()
         {
-            Origin.Translate(Vector.DeltaX, Vector.DeltaY / HeightToWidthRatio);
+            Origin.Translate(Vector.DeltaX , Vector.DeltaY);
         }
     }
 }
